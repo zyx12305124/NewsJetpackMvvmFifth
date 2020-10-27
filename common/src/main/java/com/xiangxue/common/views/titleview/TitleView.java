@@ -25,6 +25,6 @@ public class TitleView extends BaseCustomView<TitleViewBinding, TitleViewModel> 
 
     @Override
     protected void setDataToView(TitleViewModel titleViewModel) {
-        binding.setViewModel(data);
+        binding.setViewModel(titleViewModel);
     }
 }
