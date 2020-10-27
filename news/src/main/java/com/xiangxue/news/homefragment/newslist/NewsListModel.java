@@ -1,6 +1,7 @@
 package com.xiangxue.news.homefragment.newslist;
 
 import com.xiangxue.base.customview.BaseCustomViewModel;
+import com.xiangxue.base.customview.BaseMvvmModel;
 import com.xiangxue.base.mvvm.model.IBaseModelListener;
 import com.xiangxue.base.mvvm.model.PagingResult;
 import com.xiangxue.common.views.picturetitleview.PictureTitleViewModel;
@@ -13,24 +14,18 @@ import com.xiangxue.news.homefragment.api.NewsListBean;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsListModel {
-    private IBaseModelListener<List<BaseCustomViewModel>> mListener;
+public class NewsListModel  extends BaseMvvmModel {
     private String mChannelId;
     private String mChannelName;
-    private int mPage = 1;
 
-    public NewsListModel(IBaseModelListener listener, String channelId, String channelName){
-        mListener = listener;
+    public NewsListModel( String channelId, String channelName){
+        super(true,1);
         mChannelId = channelId;
         mChannelName = channelName;
     }
 
-    public void refresh(){
-        mPage = 1;
-        loadNextPage();
-    }
-
-    public void loadNextPage() {
+    @Override
+    public void load() {
         TecentNetworkApi.getService(NewsApiInterface.class)
                 .getNewsList(mChannelId,
                         mChannelName, String.valueOf(mPage))
@@ -52,7 +47,7 @@ public class NewsListModel {
                                 viewModels.add(titleViewModel);
                             }
                         }
-                        mListener.onLoadSuccess(viewModels, new PagingResult(mPage == 1, viewModels.isEmpty(), viewModels.size() >= 10));
+                        iBaseModelListenerWeakReference.get().onLoadSuccess(viewModels, new PagingResult(mPage == 1, viewModels.isEmpty(), viewModels.size() >= 10));
                         mPage ++;
                     }
 
