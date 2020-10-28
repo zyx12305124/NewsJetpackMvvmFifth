@@ -27,7 +27,7 @@ public class NewsChannelModel extends BaseMvvmModel<List<NewsChannelsBean.Channe
 
                     @Override
                     public void onFailure(Throwable e) {
-                        iBaseModelListenerWeakReference.get().onLoadFail(e.getMessage());
+                        loadFail(e.getMessage());
                     }
                 }));
     }

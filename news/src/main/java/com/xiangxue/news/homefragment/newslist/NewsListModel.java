@@ -50,7 +50,7 @@ public class NewsListModel  extends BaseMvvmModel<List<BaseCustomViewModel>> {
 
                     @Override
                     public void onFailure(Throwable e) {
-                        e.printStackTrace();
+                        loadFail(e.getMessage());
                     }
                 }));
     }

@@ -40,6 +40,8 @@ public abstract class BaseMvvmModel<RESULT_DATA> {
     }
 
     public void refresh(){
+        //在这里可以去抛一个异常
+        //need to throw if register is not called
         if (!isLoading) {
             if (isNeedPaging) {
                 mPage = INIT_PAGE_NUMBER;
@@ -52,6 +54,8 @@ public abstract class BaseMvvmModel<RESULT_DATA> {
     public abstract void load();
 
     public void loadNextPage() {
+        //在这里可以去抛一个异常
+        //need to throw if register is not called
         if (!isLoading){
             isLoading = true;
             load();
@@ -84,7 +88,18 @@ public abstract class BaseMvvmModel<RESULT_DATA> {
 
     protected void loadFail(final String errorMessage){
         IBaseModelListener listener = iBaseModelListenerWeakReference.get();
-//        if (listener != null)
+        if (listener!=null){
+            if(isNeedPaging){
+                listener.onLoadFail(this,errorMessage,
+                        new PagingResult(
+                        mPage==INIT_PAGE_NUMBER,
+                        true,//强转成List判断是否为空
+                        false));
+            } else {
+                listener.onLoadFail(this,errorMessage);
+            }
+        }
+        isLoading = false;//网络成功后要把loading置为false
     }
 
 }

@@ -46,7 +46,7 @@ public class HeadlineNewsFragment extends Fragment implements IBaseModelListener
     }
 
     @Override
-    public void onLoadFail(String message) {
+    public void onLoadFail(BaseMvvmModel model,String message, PagingResult... results) {
         Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 }
