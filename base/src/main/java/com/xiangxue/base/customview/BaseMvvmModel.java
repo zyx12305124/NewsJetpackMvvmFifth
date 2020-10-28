@@ -77,8 +77,9 @@ public abstract class BaseMvvmModel<RESULT_DATA> {
                 }
             }
 
-            isLoading = false;//网络成功后要把loading置为false
         }
+        isLoading = false;//网络成功后要把loading置为false
+
     }
 
     protected void loadFail(final String errorMessage){
