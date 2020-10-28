@@ -30,10 +30,10 @@ import java.util.List;
  * Created by Allen on 2017/7/20.
  * 保留所有版权，未经允许请不要分享到互联网和其他人
  */
-public class NewsListFragment extends Fragment implements IBaseModelListener<List<BaseCustomViewModel>> {
+public class NewsListFragment extends Fragment  {
     private NewsListRecyclerViewAdapter mAdapter;
     private FragmentNewsBinding viewDataBinding;
-    private NewsListModel mNewsListModel;
+//    private NewsListModel mNewsListModel;
 
     protected final static String BUNDLE_KEY_PARAM_CHANNEL_ID = "bundle_key_param_channel_id";
     protected final static String BUNDLE_KEY_PARAM_CHANNEL_NAME = "bundle_key_param_channel_name";
@@ -54,10 +54,10 @@ public class NewsListFragment extends Fragment implements IBaseModelListener<Lis
         viewDataBinding.listview.setHasFixedSize(true);
         viewDataBinding.listview.setLayoutManager(new LinearLayoutManager(getContext()));
         viewDataBinding.listview.setAdapter(mAdapter);
-        mNewsListModel = new NewsListModel(getArguments().getString(BUNDLE_KEY_PARAM_CHANNEL_ID),getArguments().getString(BUNDLE_KEY_PARAM_CHANNEL_NAME));
-        mNewsListModel.register(this);
+//        mNewsListModel = new NewsListModel(getArguments().getString(BUNDLE_KEY_PARAM_CHANNEL_ID),getArguments().getString(BUNDLE_KEY_PARAM_CHANNEL_NAME));
+//        mNewsListModel.register(this);
 //        mNewsListModel.refresh();
-        mNewsListModel.getCachedDataAndLoad();
+//        mNewsListModel.getCachedDataAndLoad();
         viewDataBinding.refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
@@ -74,19 +74,19 @@ public class NewsListFragment extends Fragment implements IBaseModelListener<Lis
     }
     private List<BaseCustomViewModel> viewModels = new ArrayList<>();
 
-    @Override
-    public void onLoadSuccess(BaseMvvmModel model, List<BaseCustomViewModel> baseCustomViewModels, PagingResult... results) {
-        if(results != null && results.length > 0 && results[0].isFirstPage) {
-            viewModels.clear();
-        }
-        viewModels.addAll(baseCustomViewModels);
-        mAdapter.setData(viewModels);
-        viewDataBinding.refreshLayout.finishRefresh();
-        viewDataBinding.refreshLayout.finishLoadMore();
-    }
-
-    @Override
-    public void onLoadFail(BaseMvvmModel model,String message, PagingResult... results) {
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-    }
+//    @Override
+//    public void onLoadSuccess(BaseMvvmModel model, List<BaseCustomViewModel> baseCustomViewModels, PagingResult... results) {
+//        if(results != null && results.length > 0 && results[0].isFirstPage) {
+//            viewModels.clear();
+//        }
+//        viewModels.addAll(baseCustomViewModels);
+//        mAdapter.setData(viewModels);
+//        viewDataBinding.refreshLayout.finishRefresh();
+//        viewDataBinding.refreshLayout.finishLoadMore();
+//    }
+//
+//    @Override
+//    public void onLoadFail(BaseMvvmModel model,String message, PagingResult... results) {
+//        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+//    }
 }
