@@ -1,7 +1,7 @@
 package com.xiangxue.news.homefragment.newslist;
 
 import com.xiangxue.base.customview.BaseCustomViewModel;
-import com.xiangxue.base.customview.BaseMvvmModel;
+import com.xiangxue.base.mvvm.model.BaseMvvmModel;
 import com.xiangxue.common.views.picturetitleview.PictureTitleViewModel;
 import com.xiangxue.common.views.titleview.TitleViewModel;
 import com.xiangxue.network.TecentNetworkApi;
@@ -12,12 +12,13 @@ import com.xiangxue.news.homefragment.api.NewsListBean;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsListModel  extends BaseMvvmModel<List<BaseCustomViewModel>> {
+//网络上回来的数据是NewsListBean
+public class NewsListModel  extends BaseMvvmModel<NewsListBean,List<BaseCustomViewModel>> {
     private String mChannelId;
     private String mChannelName;
 
     public NewsListModel( String channelId, String channelName){
-        super(true,1);
+        super(true,channelId + channelName + "_preference_key",1);
         mChannelId = channelId;
         mChannelName = channelName;
     }
@@ -29,9 +30,9 @@ public class NewsListModel  extends BaseMvvmModel<List<BaseCustomViewModel>> {
                         mChannelName, String.valueOf(mPage))
                 .compose(TecentNetworkApi.getInstance().applySchedulers(new BaseObserver<NewsListBean>() {
                     @Override
-                    public void onSuccess(NewsListBean newsChannelsBean) {
+                    public void onSuccess(NewsListBean newsListBean) {
                         List<BaseCustomViewModel> viewModels = new ArrayList<>();
-                        for(NewsListBean.Contentlist contentlist:newsChannelsBean.showapiResBody.pagebean.contentlist){
+                        for(NewsListBean.Contentlist contentlist:newsListBean.showapiResBody.pagebean.contentlist){
                             if(contentlist.imageurls != null && contentlist.imageurls.size() > 0){
                                 PictureTitleViewModel pictureTitleViewModel = new PictureTitleViewModel();
                                 pictureTitleViewModel.pictureUrl = contentlist.imageurls.get(0).url;
@@ -45,7 +46,7 @@ public class NewsListModel  extends BaseMvvmModel<List<BaseCustomViewModel>> {
                                 viewModels.add(titleViewModel);
                             }
                         }
-                        notifyResultToListener(viewModels);
+                        notifyResultToListener(newsListBean,viewModels);
                     }
 
                     @Override

@@ -2,6 +2,7 @@ package com.xiangxue.arch_demo.application;
 
 import android.app.Application;
 import com.xiangxue.network.base.NetworkApi;
+import com.xiangxue.base.preference.PreferencesUtil;
 
 /**
  * Created by Allen on 2017/7/20.
@@ -13,5 +14,6 @@ public class ArchDemoApplication extends Application {
     public void onCreate() {
         super.onCreate();
         NetworkApi.init(new NetworkRequestInfo(this));
+        PreferencesUtil.init(this);
     }
 }

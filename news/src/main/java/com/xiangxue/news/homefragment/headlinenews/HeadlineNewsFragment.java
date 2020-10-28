@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
-import com.xiangxue.base.customview.BaseMvvmModel;
+import com.xiangxue.base.mvvm.model.BaseMvvmModel;
 import com.xiangxue.base.mvvm.model.IBaseModelListener;
 import com.xiangxue.base.mvvm.model.PagingResult;
 import com.xiangxue.news.R;
