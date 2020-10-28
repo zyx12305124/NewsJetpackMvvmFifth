@@ -2,8 +2,6 @@ package com.xiangxue.news.homefragment.newslist;
 
 import com.xiangxue.base.customview.BaseCustomViewModel;
 import com.xiangxue.base.customview.BaseMvvmModel;
-import com.xiangxue.base.mvvm.model.IBaseModelListener;
-import com.xiangxue.base.mvvm.model.PagingResult;
 import com.xiangxue.common.views.picturetitleview.PictureTitleViewModel;
 import com.xiangxue.common.views.titleview.TitleViewModel;
 import com.xiangxue.network.TecentNetworkApi;
@@ -14,7 +12,7 @@ import com.xiangxue.news.homefragment.api.NewsListBean;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NewsListModel  extends BaseMvvmModel {
+public class NewsListModel  extends BaseMvvmModel<List<BaseCustomViewModel>> {
     private String mChannelId;
     private String mChannelName;
 
@@ -47,8 +45,7 @@ public class NewsListModel  extends BaseMvvmModel {
                                 viewModels.add(titleViewModel);
                             }
                         }
-                        iBaseModelListenerWeakReference.get().onLoadSuccess(viewModels, new PagingResult(mPage == 1, viewModels.isEmpty(), viewModels.size() >= 10));
-                        mPage ++;
+                        notifyResultToListener(viewModels);
                     }
 
                     @Override

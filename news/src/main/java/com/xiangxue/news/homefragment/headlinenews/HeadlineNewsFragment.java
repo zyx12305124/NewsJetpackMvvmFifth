@@ -11,6 +11,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
+import com.xiangxue.base.customview.BaseMvvmModel;
 import com.xiangxue.base.mvvm.model.IBaseModelListener;
 import com.xiangxue.base.mvvm.model.PagingResult;
 import com.xiangxue.news.R;
@@ -38,7 +39,7 @@ public class HeadlineNewsFragment extends Fragment implements IBaseModelListener
     }
 
     @Override
-    public void onLoadSuccess(List<NewsChannelsBean.ChannelList> channelLists, PagingResult... results) {
+    public void onLoadSuccess(BaseMvvmModel model, List<NewsChannelsBean.ChannelList> channelLists, PagingResult... results) {
         if(adapter != null) {
             adapter.setChannels(channelLists);
         }

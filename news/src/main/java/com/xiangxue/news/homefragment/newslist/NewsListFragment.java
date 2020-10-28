@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+import com.xiangxue.base.customview.BaseMvvmModel;
 import com.xiangxue.base.mvvm.model.IBaseModelListener;
 import com.xiangxue.base.mvvm.model.PagingResult;
 import com.xiangxue.network.TecentNetworkApi;
@@ -80,7 +81,7 @@ public class NewsListFragment extends Fragment implements IBaseModelListener<Lis
     private List<BaseCustomViewModel> viewModels = new ArrayList<>();
 
     @Override
-    public void onLoadSuccess(List<BaseCustomViewModel> baseCustomViewModels, PagingResult... results) {
+    public void onLoadSuccess(BaseMvvmModel model, List<BaseCustomViewModel> baseCustomViewModels, PagingResult... results) {
         if(results != null && results.length > 0 && results[0].isFirstPage) {
             viewModels.clear();
         }
