@@ -19,16 +19,18 @@ public class NewsChannelModel extends BaseMvvmModel<NewsChannelsBean, List<NewsC
     public void load(){
         TecentNetworkApi.getService(NewsApiInterface.class)
                 .getNewsChannels()
-                .compose(TecentNetworkApi.getInstance().applySchedulers(new BaseObserver<NewsChannelsBean>() {
-                    @Override
-                    public void onSuccess(NewsChannelsBean newsChannelsBean) {
-                        notifyResultToListener(newsChannelsBean,newsChannelsBean.showapiResBody.channelList);
-                    }
+                .compose(TecentNetworkApi.getInstance().
+                        applySchedulers(new BaseObserver<NewsChannelsBean>(this,this)));
+    }
 
-                    @Override
-                    public void onFailure(Throwable e) {
-                        loadFail(e.getMessage());
-                    }
-                }));
+    @Override
+    public void onSuccess(NewsChannelsBean newsChannelsBean, boolean isFromCache) {
+        notifyResultToListener(newsChannelsBean,newsChannelsBean.showapiResBody.channelList,isFromCache);
+
+    }
+
+    @Override
+    public void onFailure(Throwable e) {
+        loadFail(e.getMessage());
     }
 }

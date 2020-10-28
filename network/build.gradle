@@ -37,4 +37,5 @@ dependencies {
 
 
     api 'androidx.preference:preference:1.0.0'
+    api project(":base")
 }
