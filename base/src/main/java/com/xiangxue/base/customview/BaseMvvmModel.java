@@ -76,11 +76,14 @@ public abstract class BaseMvvmModel<RESULT_DATA> {
                     mPage ++;
                 }
             }
+
+            isLoading = false;//网络成功后要把loading置为false
         }
     }
 
     protected void loadFail(final String errorMessage){
-
+        IBaseModelListener listener = iBaseModelListenerWeakReference.get();
+//        if (listener != null)
     }
 
 }
