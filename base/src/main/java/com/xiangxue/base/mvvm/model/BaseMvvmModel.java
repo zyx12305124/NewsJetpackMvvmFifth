@@ -1,9 +1,16 @@
 package com.xiangxue.base.mvvm.model;
 
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.xiangxue.base.mvvm.model.IBaseModelListener;
 import com.xiangxue.base.mvvm.model.PagingResult;
 import com.xiangxue.base.preference.BasicDataPreferenceUtil;
+import com.xiangxue.base.utils.GenericUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -39,6 +46,8 @@ public abstract class BaseMvvmModel<NETWORK_DATA,RESULT_DATA> implements MvvmDat
     private boolean isNeedPaging;//判断是否需要分页
     private final int INIT_PAGE_NUMBER;
 
+    private String mApkPredefinedData;
+
     //用来判断在加载的过程当中，其他重复来了请求，网络数据还没回来的话，是不发请求出去的
     private boolean isLoading;
     private String cachePreferenceKey;
@@ -67,6 +76,48 @@ public abstract class BaseMvvmModel<NETWORK_DATA,RESULT_DATA> implements MvvmDat
             }
             isLoading = true;
             load();
+        }
+    }
+
+    public void getCachedDataAndLoad(){
+        // 我们希望应用先读缓存，再请求网络
+        // BaseMvvmModel有三个方法提供出去
+        // 如果没有缓存，就refresh；如果需要下一页，可以loadNextPage;
+        // 如果有缓存的话就getCachedDataAndLoad
+        if(!isLoading) {
+            isLoading = true;
+            if (cachePreferenceKey != null) {
+                String saveDataString = BasicDataPreferenceUtil.getInstance().getString(cachePreferenceKey);
+                if(!TextUtils.isEmpty(saveDataString)) {
+                    //如果缓存不等于空，就要反序列化了
+                    try {
+                        NETWORK_DATA savedData = new Gson().
+                                fromJson(new JSONObject(saveDataString).getString("data"),
+                                        (Class<NETWORK_DATA>) GenericUtils.getGenericType(this));
+                        if(savedData != null) {
+                            onSuccess(savedData, true);//来自缓存
+                        }
+                        long timeSlot = Long.parseLong(new JSONObject(saveDataString).getString("updateTimeInMillis"));
+                        if(isNeedToUpdate(timeSlot)) {
+                            load();
+                            return;
+                        }
+                    } catch (JSONException e) {
+                        Log.e("BaseMvvmModel",e.getMessage());
+                        //e.printStackTrace();
+                    }
+                }
+
+                if(mApkPredefinedData != null) {
+                    NETWORK_DATA savedData = new Gson().fromJson(mApkPredefinedData, (Class<NETWORK_DATA>) GenericUtils.getGenericType(this));
+                    if(savedData != null) {
+                        onSuccess(savedData, true);
+                    }
+                }
+
+
+                load();
+            }
         }
     }
 
@@ -143,14 +194,7 @@ public abstract class BaseMvvmModel<NETWORK_DATA,RESULT_DATA> implements MvvmDat
         isLoading = false;//网络成功后要把loading置为false
     }
 
-    protected void saveDataToPreference(NETWORK_DATA data) {
-        if(data != null) {
-            BaseCachedData<NETWORK_DATA> cachedData = new BaseCachedData<>();
-            cachedData.data = data;
-            cachedData.updateTimeInMillis = System.currentTimeMillis();
-            BasicDataPreferenceUtil.getInstance().setString(cachePreferenceKey, new Gson().toJson(cachedData));
-        }
-    }
+
 
     /**
      * 当页面取消的时候会用viewmodel,viewmodel clear的时候 我们会自动把网络请求取消掉
@@ -171,5 +215,20 @@ public abstract class BaseMvvmModel<NETWORK_DATA,RESULT_DATA> implements MvvmDat
         }
 
         compositeDisposable.add(d);
+    }
+
+
+    protected boolean isNeedToUpdate(long cachedTimeSlot) {
+        //目前默认返回true 即每次都加载 具体的判断条件自己写
+        return true;
+    }
+
+    protected void saveDataToPreference(NETWORK_DATA data) {
+        if(data != null) {
+            BaseCachedData<NETWORK_DATA> cachedData = new BaseCachedData<>();
+            cachedData.data = data;
+            cachedData.updateTimeInMillis = System.currentTimeMillis();
+            BasicDataPreferenceUtil.getInstance().setString(cachePreferenceKey, new Gson().toJson(cachedData));
+        }
     }
 }
